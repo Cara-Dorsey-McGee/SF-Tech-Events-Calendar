@@ -271,6 +271,12 @@
     font-weight:600;
     margin-top:4px;
   }
+  .email-error{
+    color:#f4a8a8;
+    font-size:14px;
+    font-weight:600;
+    margin-top:4px;
+  }
 
   .editor-note{
     border:1px dashed rgba(255,255,255,0.18);
@@ -408,82 +414,4 @@
       <div class="meta"><b>Fri, Aug 7 &middot; 8:00&ndash;9:30 AM</b> &middot; Le Marais Bakery (Sanchez St.), San Francisco</div>
       <p class="desc">An intimate, small-group coffee gathering for people fascinated by the intersection of AI and fashion. Already at capacity for this edition &mdash; join the waitlist or watch for the next one.</p>
       <div class="card-footer">
-        <span class="tag-line">COMMUNITY-HOSTED</span>
-        <a class="evlink" href="https://luma.com/xfbtidsx" target="_blank" rel="noopener">View Event &rarr;</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- PROPTECH -->
-  <section>
-    <div class="section-marker"><span class="dot"></span>PROPTECH &mdash; WORTH THE TRIP</div>
-    <hr class="section-hr">
-
-    <div class="card">
-      <div class="badge-row"><span class="badge badge-pink">SEP 2&ndash;4</span></div>
-      <h3>Elise Beyond</h3>
-      <div class="meta"><b>Wed&ndash;Fri, Sep 2&ndash;4, 2026</b> &middot; JW Marriott, Nashville, TN</div>
-      <p class="desc">EliseAI's inaugural conference on mastering multifamily AI &mdash; product deep-dives, customer conversations on real NOI lift, and the debut of Atlas, EliseAI's new multifamily work tool. Built for property management executives, ops/tech teams, and asset managers. Standard pricing through Aug 7 ($699); last-call pricing Aug 8&ndash;11 ($999). Registration closes Aug 11.</p>
-      <div class="card-footer">
-        <span class="tag-line">ELISEAI</span>
-        <a class="evlink" href="https://eliseai.com/elise-beyond" target="_blank" rel="noopener">View Event &rarr;</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="badge-row"><span class="badge badge-pink">SEP 22&ndash;24</span></div>
-      <h3>Blueprint</h3>
-      <div class="meta"><b>Tue&ndash;Thu, Sep 22&ndash;24, 2026</b> &middot; The Venetian, Las Vegas, NV</div>
-      <p class="desc">One of the largest gatherings in real estate technology &mdash; thousands of proptech founders, investors, brokers, and operators descend on The Venetian for three days of keynotes, demos, and dealmaking on the future of the built world.</p>
-      <div class="card-footer">
-        <span class="tag-line">BLUEPRINT</span>
-        <a class="evlink" href="https://blueprintvegas.com" target="_blank" rel="noopener">View Event &rarr;</a>
-      </div>
-    </div>
-  </section>
-
-  <div class="cta-box">
-    <h3>Get this calendar in your inbox</h3>
-    <p>Drop your email and get the next edition delivered before it's posted.</p>
-    <form id="email-capture-form" class="email-form">
-      <input type="email" id="email-input" name="email" placeholder="you@email.com" required>
-      <button type="submit" class="btn-primary">Notify Me</button>
-    </form>
-    <p id="email-confirm" class="email-confirm" style="display:none;">You're on the list &mdash; thanks!</p>
-  </div>
-
-  <footer>
-    SF Tech August Events Calendar &middot; Curated weekly by Cara Dorsey-McGee<br>
-    Get the weekly drop on <a href="#">LinkedIn</a> &middot; Know a builder in SF? Forward it.
-  </footer>
-
-</div>
-
-<script>
-  // Simple client-side email capture.
-  // To actually collect and store these emails, connect this form to a form
-  // backend such as Formspree (formspree.io), Mailchimp, or ConvertKit —
-  // no server code required. Example with Formspree:
-  //
-  //   const form = document.getElementById('email-capture-form');
-  //   form.action = 'https://formspree.io/f/YOUR_FORM_ID';
-  //   form.method = 'POST';
-  //
-  // and remove the preventDefault() below so the form posts normally.
-
-  document.getElementById('email-capture-form').addEventListener('submit', function (e) {
-    e.preventDefault();
-    var email = document.getElementById('email-input').value;
-    if (!email) return;
-
-    // Placeholder capture — replace with a real endpoint (see comment above).
-    console.log('New calendar signup:', email);
-
-    document.getElementById('email-confirm').style.display = 'block';
-    this.reset();
-    this.style.display = 'none';
-  });
-</script>
-
-</body>
-</html>
+        <span
