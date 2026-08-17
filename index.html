@@ -25,10 +25,104 @@
     background:linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 380px, #08060c 100%);
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     color:var(--text-main);
+    overflow-x:hidden;
   }
-  .wrap{max-width:760px;margin:0 auto;padding:64px 24px 40px;}
+  .wrap{max-width:760px;margin:0 auto;padding:64px 24px 40px;position:relative;}
 
-  /* HERO */
+  @keyframes glowPulse{
+    0%, 100%{opacity:0.55; transform:scale(1);}
+    50%{opacity:0.85; transform:scale(1.12);}
+  }
+  @keyframes shimmer{
+    0%{background-position:0% 50%;}
+    100%{background-position:200% 50%;}
+  }
+
+  /* MINI HEADER (scroll-triggered) */
+  .mini-header{
+    position:fixed;
+    top:0; left:0; right:0;
+    z-index:50;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:14px;
+    padding:15px 24px;
+    background:rgba(10,7,16,0.86);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    border-bottom:1px solid rgba(126,200,255,0.2);
+    transform:translateY(-100%);
+    opacity:0;
+    transition:transform 0.45s cubic-bezier(.4,0,.2,1), opacity 0.4s ease;
+    pointer-events:none;
+  }
+  .mini-header::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-1px;
+    height:2px;
+    background:linear-gradient(90deg, transparent, var(--glow), var(--pink-bright), var(--purple), transparent);
+    background-size:200% 100%;
+    animation:shimmer 3.5s linear infinite;
+  }
+  .mini-header.visible{
+    transform:translateY(0);
+    opacity:1;
+    pointer-events:auto;
+  }
+  .mini-header .mh-title{
+    font-size:15px;
+    font-weight:800;
+    letter-spacing:0.3px;
+    background:linear-gradient(180deg,#fbe4f2 0%, #e6a8d6 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    white-space:nowrap;
+  }
+  .mini-header .mh-pill{
+    font-size:10.5px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    color:#f4b8dd;
+    border:1px solid var(--pink);
+    padding:4px 11px;
+    border-radius:14px;
+    white-space:nowrap;
+  }
+
+  /* HERO (scroll-triggered transform) */
+  .hero{
+    position:relative;
+    transition:padding-top 0.45s cubic-bezier(.4,0,.2,1);
+  }
+  .hero::before,
+  .hero::after{
+    content:"";
+    position:absolute;
+    width:340px;
+    height:340px;
+    border-radius:50%;
+    filter:blur(70px);
+    z-index:-1;
+    pointer-events:none;
+    animation:glowPulse 7s ease-in-out infinite;
+  }
+  .hero::before{
+    top:-60px;
+    left:50%;
+    margin-left:-260px;
+    background:radial-gradient(circle, rgba(244,168,208,0.5), transparent 70%);
+  }
+  .hero::after{
+    top:-40px;
+    left:50%;
+    margin-left:-60px;
+    background:radial-gradient(circle, rgba(126,200,255,0.4), transparent 70%);
+    animation-delay:1.5s;
+  }
   .kicker{
     text-align:center;
     letter-spacing:2px;
@@ -37,6 +131,9 @@
     color:var(--gold);
     text-transform:uppercase;
     margin-bottom:18px;
+    max-height:30px;
+    overflow:hidden;
+    transition:opacity 0.35s ease, max-height 0.45s cubic-bezier(.4,0,.2,1), margin 0.45s ease, transform 0.45s ease;
   }
   h1.title{
     text-align:center;
@@ -44,10 +141,13 @@
     font-weight:800;
     line-height:1.1;
     margin:0 0 22px;
-    background:linear-gradient(180deg,#fbe4f2 0%, #f2c9e6 55%, #e6a8d6 100%);
+    background:linear-gradient(135deg,#ffffff 0%, #fbe4f2 30%, #f4a8d0 60%, #7ec8ff 100%);
     -webkit-background-clip:text;
     background-clip:text;
     color:transparent;
+    filter:drop-shadow(0 0 26px rgba(244,168,208,0.4)) drop-shadow(0 0 50px rgba(126,200,255,0.18));
+    transform-origin:center top;
+    transition:transform 0.45s cubic-bezier(.4,0,.2,1), margin 0.45s ease;
   }
   .subtitle{
     text-align:center;
@@ -56,8 +156,17 @@
     color:var(--text-body);
     max-width:560px;
     margin:0 auto 28px;
+    max-height:100px;
+    overflow:hidden;
+    transition:opacity 0.35s ease, max-height 0.45s cubic-bezier(.4,0,.2,1), margin 0.45s ease, transform 0.45s ease;
   }
-  .edition-pill-wrap{text-align:center;margin-bottom:22px;}
+  .edition-pill-wrap{
+    text-align:center;
+    margin-bottom:22px;
+    max-height:60px;
+    overflow:hidden;
+    transition:opacity 0.35s ease, max-height 0.45s cubic-bezier(.4,0,.2,1), margin 0.45s ease, transform 0.45s ease;
+  }
   .edition-pill{
     display:inline-block;
     border:1px solid var(--pink);
@@ -68,17 +177,71 @@
     padding:8px 20px;
     border-radius:20px;
     text-transform:uppercase;
+    box-shadow:0 0 18px rgba(244,168,208,0.35), inset 0 0 12px rgba(244,168,208,0.08);
   }
   .byline{
     text-align:center;
     color:var(--text-dim);
     font-size:14px;
     margin-bottom:36px;
+    max-height:40px;
+    overflow:hidden;
+    transition:opacity 0.35s ease, max-height 0.45s cubic-bezier(.4,0,.2,1), margin 0.45s ease, transform 0.45s ease;
   }
   hr.divider{
     border:none;
     border-top:1px solid rgba(255,255,255,0.08);
     margin:0 0 32px;
+  }
+
+  /* Collapsed state, toggled by IntersectionObserver when hero scrolls out of view */
+  .hero.is-collapsed{padding-top:0;}
+  .hero.is-collapsed .kicker{
+    opacity:0;
+    max-height:0;
+    margin-bottom:0;
+    transform:translateY(-12px);
+  }
+  .hero.is-collapsed h1.title{
+    transform:scale(0.6);
+    margin-bottom:0;
+  }
+  .hero.is-collapsed .subtitle{
+    opacity:0;
+    max-height:0;
+    margin:0;
+    transform:translateY(-12px);
+  }
+  .hero.is-collapsed .edition-pill-wrap{
+    opacity:0;
+    max-height:0;
+    margin-bottom:0;
+    transform:translateY(-12px);
+  }
+  .hero.is-collapsed .byline{
+    opacity:0;
+    max-height:0;
+    margin-bottom:0;
+    transform:translateY(-12px);
+  }
+  #hero-sentinel{height:1px;}
+
+  /* REVEAL ON SCROLL (transition lives on .card/.why-box/.cta-box themselves) */
+  .reveal{
+    opacity:0;
+    translate:0 28px;
+  }
+  .reveal.in-view{
+    opacity:1;
+    translate:0 0;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .mini-header, .hero, .hero::before, .hero::after, .mini-header::after, .kicker, h1.title, .subtitle, .edition-pill-wrap, .byline, .reveal{
+      transition:none !important;
+      animation:none !important;
+    }
+    .reveal{opacity:1; translate:0 0;}
   }
 
   /* WHY BOX */
@@ -91,10 +254,169 @@
     font-size:15px;
     line-height:1.65;
     margin-bottom:44px;
+    transition:opacity 0.7s cubic-bezier(.16,1,.3,1), translate 0.7s cubic-bezier(.16,1,.3,1);
   }
   .why-box strong{color:var(--text-main);}
   .why-box p{margin:0;}
   .why-box p.featured-row{margin-top:14px;}
+
+  /* TABS (Upcoming / Archive) */
+  .tab-nav{
+    display:flex;
+    gap:10px;
+    justify-content:center;
+    margin-bottom:40px;
+  }
+  .tab-btn{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.18);
+    color:var(--text-dim);
+    font-size:12.5px;
+    font-weight:700;
+    letter-spacing:1px;
+    text-transform:uppercase;
+    padding:10px 24px;
+    border-radius:20px;
+    cursor:pointer;
+    transition:all 0.25s ease;
+  }
+  .tab-btn:hover{border-color:rgba(126,200,255,0.45); color:var(--text-main);}
+  .tab-btn.active{
+    background:linear-gradient(135deg, rgba(236,111,176,0.18), rgba(126,200,255,0.12));
+    border-color:var(--pink-bright);
+    color:var(--text-main);
+    box-shadow:0 0 16px rgba(244,168,208,0.25);
+  }
+  .tab-panel{display:none;}
+  .tab-panel.active{display:block;}
+
+  .card.archived{opacity:0.62; filter:grayscale(0.45);}
+  .card.archived:hover{
+    opacity:0.9;
+    filter:grayscale(0.15);
+    border-color:rgba(255,255,255,0.18);
+    background:var(--card);
+    box-shadow:none;
+    transform:none;
+  }
+  .badge-past{border:1px solid rgba(255,255,255,0.25);color:var(--text-dim);}
+  .archive-note{
+    color:var(--text-dim);
+    font-size:13.5px;
+    line-height:1.6;
+    margin:-6px 0 26px;
+  }
+
+  /* ADAPTIVE SLIDER (date filter) */
+  .filter-box{
+    background:var(--card);
+    border:1px solid var(--card-border);
+    border-radius:24px;
+    padding:28px 30px 26px;
+    max-width:360px;
+    margin:0 auto 44px;
+    text-align:center;
+    transition:opacity 0.6s cubic-bezier(.16,1,.3,1), translate 0.6s cubic-bezier(.16,1,.3,1), border-color 0.35s ease, box-shadow 0.35s ease;
+  }
+  .filter-box:hover{
+    border-color:rgba(126,200,255,0.35);
+    box-shadow:0 0 0 1px rgba(126,200,255,0.15), 0 10px 30px rgba(126,200,255,0.1);
+  }
+  .filter-label{
+    font-size:12px;
+    font-weight:700;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--text-dim);
+    margin-bottom:10px;
+  }
+  .filter-value-row{
+    display:flex;
+    align-items:baseline;
+    justify-content:center;
+    gap:8px;
+    margin-bottom:22px;
+  }
+  .filter-day{
+    font-size:44px;
+    font-weight:800;
+    line-height:1;
+    color:var(--gold);
+    transition:color 0.3s ease, transform 0.15s ease;
+  }
+  .filter-day.bump{transform:scale(1.12);}
+  .filter-unit{
+    font-size:19px;
+    font-weight:700;
+    color:var(--text-main);
+    letter-spacing:1px;
+  }
+  .filter-track{
+    position:relative;
+    height:44px;
+    border-radius:24px;
+    background:rgba(255,255,255,0.06);
+    overflow:hidden;
+  }
+  .filter-dots{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    padding:0 16px;
+    pointer-events:none;
+    z-index:1;
+  }
+  .filter-dots span{
+    width:5px;height:5px;border-radius:50%;
+    background:rgba(255,255,255,0.25);
+  }
+  .filter-fill{
+    position:absolute;
+    top:0; left:0;
+    height:100%;
+    width:44px;
+    border-radius:24px;
+    background:linear-gradient(90deg, #e8c468, #f4a24a);
+    transition:width 0.35s cubic-bezier(.34,1.56,.64,1), background 0.4s ease;
+    z-index:2;
+  }
+  .filter-range{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:44px;
+    opacity:0;
+    cursor:pointer;
+    z-index:10;
+    margin:0;
+  }
+  .filter-thumb{
+    position:absolute;
+    top:2px;
+    left:2px;
+    width:40px;height:40px;
+    border-radius:50%;
+    pointer-events:none;
+    z-index:5;
+    transition:left 0.35s cubic-bezier(.34,1.56,.64,1);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .filter-thumb-inner{
+    width:32px;height:32px;
+    border-radius:50%;
+    background:#fff;
+    box-shadow:inset 0 2px 4px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.25);
+  }
+  .filter-hint{
+    margin-top:16px;
+    font-size:13px;
+    color:var(--text-body);
+  }
+
+  /* Cards hidden by the date slider */
+  .card.day-hidden{display:none;}
 
   /* SECTION HEADERS */
   .section-marker{
@@ -127,7 +449,7 @@
     padding:24px 26px;
     margin-bottom:16px;
     position:relative;
-    transition:border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease, transform 0.35s ease;
+    transition:border-color 0.35s ease, box-shadow 0.35s ease, background 0.35s ease, transform 0.35s ease, opacity 0.6s cubic-bezier(.16,1,.3,1), translate 0.6s cubic-bezier(.16,1,.3,1);
   }
   .card:hover{
     border-color:rgba(126,200,255,0.55);
@@ -216,6 +538,7 @@
     padding:40px 32px;
     text-align:center;
     margin-bottom:20px;
+    transition:opacity 0.7s cubic-bezier(.16,1,.3,1), translate 0.7s cubic-bezier(.16,1,.3,1);
   }
   .cta-box h3{font-size:26px;margin:0 0 12px;color:var(--text-main);}
   .cta-box p{color:var(--text-body);font-size:15px;line-height:1.6;max-width:480px;margin:0 auto 24px;}
@@ -300,19 +623,52 @@
 </style>
 </head>
 <body>
+
+<div class="mini-header" id="mini-header">
+  <span class="mh-title">SF Tech August Events Calendar</span>
+  <span class="mh-pill">August 2026</span>
+</div>
+
 <div class="wrap">
 
-  <div class="kicker">AI &middot; BUILDERS &middot; SF</div>
-  <h1 class="title">SF Tech August<br>Events Calendar</h1>
-  <p class="subtitle">Join the rooms where San Francisco's builders are shipping, funding, and workshopping &mdash; curated for August.</p>
-  <div class="edition-pill-wrap"><span class="edition-pill">August 2026 Edition</span></div>
-  <div class="byline">Curated by Cara Dorsey-McGee &middot; Refreshed weekly</div>
+  <header class="hero" id="hero">
+    <div class="kicker">AI &middot; BUILDERS &middot; SF</div>
+    <h1 class="title">SF Tech August<br>Events Calendar</h1>
+    <p class="subtitle">Join the rooms where San Francisco's builders are shipping, funding, and workshopping &mdash; curated for August.</p>
+    <div class="edition-pill-wrap"><span class="edition-pill">August 2026 Edition</span></div>
+    <div class="byline">Curated by Cara Dorsey-McGee &middot; Refreshed weekly</div>
+  </header>
+  <div id="hero-sentinel"></div>
 
   <hr class="divider">
 
-  <div class="why-box">
+  <div class="why-box reveal">
     <p><strong>How this Helps:</strong> the best builder events in SF are scattered across Luma, Posh, and a dozen private invite lists. This pulls the ones worth your time into one place &mdash; demo nights, hands-on workshops, and hackathons.</p>
-    <p class="featured-row">Featured this edition: Baseten, Privy, Nevermined, Snowflake, and Anthropic's own Claude Coworkshop.</p>
+    <p class="featured-row">Featured this edition: SF Venture Week's founder-investor pitch nights, the Sisters Female Founders Breakfast, Founders Inc.'s Blueprint II preview, and two hands-on Claude sessions &mdash; one for marketers, one for CRE.</p>
+  </div>
+
+  <div class="tab-nav" role="tablist">
+    <button type="button" class="tab-btn active" data-tab="tab-upcoming" role="tab" aria-selected="true">Upcoming</button>
+    <button type="button" class="tab-btn" data-tab="tab-archive" role="tab" aria-selected="false">Archive</button>
+  </div>
+
+  <div class="tab-panel active" id="tab-upcoming">
+
+  <div class="filter-box reveal">
+    <div class="filter-label">Show Events From</div>
+    <div class="filter-value-row">
+      <span id="filter-day-number" class="filter-day">17</span>
+      <span class="filter-unit">AUG</span>
+    </div>
+    <div class="filter-track">
+      <div class="filter-dots">
+        <span></span><span></span><span></span><span></span><span></span><span></span>
+      </div>
+      <div class="filter-fill" id="filter-fill"></div>
+      <input type="range" id="filter-slider" class="filter-range" min="17" max="27" step="1" value="17" aria-label="Show events from this day of August onward">
+      <div class="filter-thumb" id="filter-thumb"><div class="filter-thumb-inner"></div></div>
+    </div>
+    <div class="filter-hint" id="filter-hint">Showing all upcoming events</div>
   </div>
 
   <!-- THIS WEEK -->
@@ -320,73 +676,112 @@
     <div class="section-marker"><span class="dot"></span>COMING SOON &middot; DON'T MISS</div>
     <hr class="section-hr">
 
-    <div class="card hero-card">
-      <div class="badge-row"><span class="badge badge-gold">MON, AUG 3</span></div>
-      <h3>Agents That Pay</h3>
-      <div class="meta"><b>Mon, Aug 3 &middot; 5:45&ndash;8:30 PM</b> &middot; AWS Builder Loft, San Francisco &middot; Hosted by Nevermined</div>
-      <p class="desc">A hands-on workshop, not a panel &mdash; bring any agent you're building and leave with it able to pay autonomously. Talks from Nevermined, Exa, Baselayer, and Braintrust, then a live build session wiring up the Nevermined payments layer. Approval required to register.</p>
+    <div class="card hero-card reveal" data-day="17">
+      <div class="badge-row"><span class="badge badge-gold">MON, AUG 17</span></div>
+      <h3>Pitch Investors @ Raisi x Finix Pitch Night &mdash; SF Venture Week</h3>
+      <div class="meta"><b>Mon, Aug 17 &middot; 6:30&ndash;9:30 PM</b> &middot; Finix, San Francisco, CA</div>
+      <p class="desc">An SF Venture Week evening bringing founders, active investors, and startup operators to Finix HQ &mdash; an investor panel, a live pitch showcase from selected startups, then food, drinks, and open networking.</p>
       <div class="card-footer">
-        <span class="tag-line">NEVERMINED &middot; AWS BUILDER LOFT</span>
-        <a class="evlink" href="https://luma.com/f6m4yhtr" target="_blank" rel="noopener">View Event &rarr;</a>
+        <span class="tag-line">RAISI &middot; FINIX &middot; SPRINTO</span>
+        <a class="evlink" href="https://luma.com/raisi-0ilr" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
 
-    <div class="card">
-      <div class="badge-row"><span class="badge badge-pink">TUE, AUG 4</span></div>
-      <h3>Built on Baseten | AI Demo Night</h3>
-      <div class="meta"><b>Tue, Aug 4 &middot; 6:00&ndash;8:00 PM</b> &middot; Baseten HQ, San Francisco</div>
-      <p class="desc">Quarterly showcase where early-stage founders building on Baseten's inference stack get on stage and share technical stories. This edition: Trajectory, Subconscious, Antigen, and Kaizen. Hosted with CapitalG. Space is limited.</p>
+    <div class="card reveal" data-day="18">
+      <div class="badge-row"><span class="badge badge-pink">TUE, AUG 18</span></div>
+      <h3>Sisters Female Founders Breakfast: Women Backing Women</h3>
+      <div class="meta"><b>Tue, Aug 18 &middot; 9:30 AM&ndash;12:00 PM</b> &middot; Nordic Innovation House, Palo Alto, CA</div>
+      <p class="desc">A curated breakfast panel on closing the gender funding gap &mdash; women backing women as LPs, VCs, and founders. Panelists from How Women Invest, 3i Partners, Chief in Tech Capital, and Prospera Women VC, moderated by Sisters Capital VC's Assel Seitova. Approval required to register.</p>
       <div class="card-footer">
-        <span class="tag-line">BASETEN &middot; CAPITALG</span>
-        <a class="evlink" href="https://luma.com/b4y2veki" target="_blank" rel="noopener">View Event &rarr;</a>
+        <span class="tag-line">SISTERS FEMALE FOUNDERS</span>
+        <a class="evlink" href="https://luma.com/3j8tn5fk" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
 
-    <div class="card">
-      <div class="badge-row"><span class="badge badge-pink">WED, AUG 5</span></div>
-      <h3>Privy Home: IRL SF</h3>
-      <div class="meta"><b>Wed, Aug 5 &middot; 11:00 AM&ndash;6:00 PM</b> &middot; San Francisco (address on registration)</div>
-      <p class="desc">Privy's quarterly community series lands in SF for an afternoon of technical talks, a hands-on AWS AgentCore workshop, a Stripe Projects builder session, live customer demos, and office hours &mdash; for anyone building AI agents, embedded finance, or onchain infrastructure.</p>
+    <div class="card reveal" data-day="18">
+      <div class="badge-row"><span class="badge badge-pink">TUE, AUG 18</span></div>
+      <h3>Blueprint II Preview: Physical AI @ Founders Inc.</h3>
+      <div class="meta"><b>Tue, Aug 18 &middot; 1:00&ndash;7:00 PM</b> &middot; Founders, Inc. | San Francisco Lab</div>
+      <p class="desc">Founders Inc. opens its doors during Actuate for a day of live demos from portfolio companies building robotics, autonomy, AI infrastructure, manufacturing, drones, and developer tools. No slides, no panels &mdash; just working products and the founders behind them. Approval required to register.</p>
       <div class="card-footer">
-        <span class="tag-line">PRIVY &middot; STRIPE &middot; AWS AGENTCORE</span>
-        <a class="evlink" href="https://luma.com/x1to4ziz?tk=PY94Eq" target="_blank" rel="noopener">View Event &rarr;</a>
+        <span class="tag-line">FOUNDERS INC.</span>
+        <a class="evlink" href="https://luma.com/blueprint-preview?tk=smjhcc" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
 
-    <div class="card">
-      <div class="badge-row"><span class="badge badge-pink">FRI, AUG 7</span></div>
-      <h3>Snowflake X Beta Fund Agent &amp; Token Economy Hackathon</h3>
-      <div class="meta"><b>Fri, Aug 7 &middot; 9:00 AM&ndash;6:00 PM</b> &middot; Menlo Park, CA</div>
-      <p class="desc">A full-day build sprint on the economics behind agent intelligence &mdash; cost-of-intelligence tooling, monetizable AI products, or open-category token-economy hacks. Snowflake Cortex Agents credits provided. $600/$500/$400 prizes, judged live at 4 PM.</p>
+    <div class="card reveal" data-day="18">
+      <div class="badge-row">
+        <span class="badge badge-pink">TUE, AUG 18</span>
+        <span class="badge badge-full">EVENT FULL &middot; WAITLIST</span>
+      </div>
+      <h3>Salt Bread Maxxing: Shio Pan x Multiplayer AI, feat. Tano SF</h3>
+      <div class="meta"><b>Tue, Aug 18 &middot; 5:00&ndash;8:00 PM</b> &middot; San Francisco (address on registration)</div>
+      <p class="desc">PromptQL's monthly community gathering &mdash; warm shio pan from Tano SF, drinks, music, and ~15 minutes of lightning demos on what the team's shipped since the last one, then plenty of time to mingle with founders, engineers, and designers from across the Bay. Already full, but the waitlist is open.</p>
       <div class="card-footer">
-        <span class="tag-line">SNOWFLAKE &middot; BETA UNIVERSITY</span>
-        <a class="evlink" href="https://luma.com/beta-fdnw" target="_blank" rel="noopener">View Event &rarr;</a>
+        <span class="tag-line">PROMPTQL EVENTS &middot; TANO SF</span>
+        <a class="evlink" href="https://luma.com/saltbreadmaxxing" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
 
-    <div class="card">
-      <div class="badge-row"><span class="badge badge-pink">WED, AUG 12</span></div>
-      <h3>Mastering Negotiation and High-Stakes Collaboration</h3>
-      <div class="meta"><b>Wed, Aug 12</b> &middot; San Francisco (address on registration)</div>
-      <p class="desc">A 100 Women in Finance Education-series session on negotiation tactics and navigating high-stakes collaboration &mdash; open to members and prospective members of the Northern California chapter.</p>
+    <div class="card reveal" data-day="19">
+      <div class="badge-row"><span class="badge badge-pink">WED, AUG 19</span></div>
+      <h3>JPMorgan Innovation Economy Connect @ Park Padel</h3>
+      <div class="meta"><b>Wed, Aug 19 &middot; 4:45&ndash;7:15 PM</b> &middot; San Francisco (address on registration)</div>
+      <p class="desc">J.P. Morgan's Innovation Economy team brings together startup founders, operators, and investors for an evening of padel and networking in the Bay Area. All skill levels welcome. Approval required to register.</p>
       <div class="card-footer">
-        <span class="tag-line">100 WOMEN IN FINANCE</span>
-        <a class="evlink" href="https://100women.org/event/?event_id=4427#4427-mastering-negotiation-and-high-stakes-collaboration" target="_blank" rel="noopener">View Event &rarr;</a>
+        <span class="tag-line">JPMORGAN CHASE</span>
+        <a class="evlink" href="https://luma.com/su2qco99" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
 
-    <div class="card">
-      <div class="badge-row"><span class="badge badge-pink">THU, AUG 13</span></div>
-      <h3>AI Healthtech Summit at AngelList</h3>
-      <div class="meta"><b>Thu, Aug 13 &middot; 6:00&ndash;9:00 PM</b> &middot; AngelList, San Francisco, CA</div>
-      <p class="desc">SFPlayground's evening summit on AI moving from healthcare demos into real clinical workflows &mdash; a panel with a physician-investor, a former FDA Digital Health Center of Excellence regulator, and a healthcare founder, plus startup demo tables, dinner, and networking. Tickets from $60; demo booths available.</p>
+    <div class="card reveal" data-day="19">
+      <div class="badge-row"><span class="badge badge-pink">WED, AUG 19</span></div>
+      <h3>Corgi x Raisi Pitch Night @ Corgi HQ</h3>
+      <div class="meta"><b>Wed, Aug 19 &middot; 6:30&ndash;9:30 PM</b> &middot; Corgi HQ, San Francisco, CA</div>
+      <p class="desc">Another SF Venture Week pitch night &mdash; founders pitch, investors listen, at Corgi HQ. Investor panel, live pitch showcase, and networking over food and drinks afterward. (Yes, there's a real corgi.)</p>
       <div class="card-footer">
-        <span class="tag-line">SFPLAYGROUND &middot; ANGELLIST</span>
-        <a class="evlink" href="https://luma.com/aihealthtechsf?coupon=SYNEXIS20" target="_blank" rel="noopener">View Event &rarr;</a>
+        <span class="tag-line">RAISI &middot; CORGI</span>
+        <a class="evlink" href="https://luma.com/raisi-g87x?tk=AGSMbc" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card reveal" data-day="20">
+      <div class="badge-row">
+        <span class="badge badge-pink">THU, AUG 20</span>
+        <span class="badge badge-full">EVENT FULL &middot; WAITLIST</span>
+      </div>
+      <h3>SF Rooftop Tech Mixer &amp; Demo Night</h3>
+      <div class="meta"><b>Thu, Aug 20 &middot; 5:00&ndash;9:00 PM</b> &middot; San Francisco (address on registration)</div>
+      <p class="desc">Rooftop views, drinks, and eight lightning demos from Rootly AI, Zesty, Echo, Twingate, Inngest, Entire, Port, and Spacelift &mdash; plus two hours of networking with founders, engineers, and investors as the sun goes down. Already full, but the waitlist is open.</p>
+      <div class="card-footer">
+        <span class="tag-line">ROOTLY &middot; SVB</span>
+        <a class="evlink" href="https://luma.com/r6o27grm?utm_medium=email&amp;utm_source=substack" target="_blank" rel="noopener">View Event &rarr;</a>
+      </div>
+    </div>
+
+    <div class="card reveal" data-day="20">
+      <div class="badge-row"><span class="badge badge-pink">THU, AUG 20</span></div>
+      <h3>Down from London: Granola Marketing</h3>
+      <div class="meta"><b>Thu, Aug 20 &middot; 6:00&ndash;9:00 PM</b> &middot; Fort Mason, San Francisco, CA</div>
+      <p class="desc">Granola's marketing team is over from London &mdash; drinks and conversation with the humans behind some of the fastest-growing companies, plus a chance to pick their brains on brand, growth, and community. Approval required to register.</p>
+      <div class="card-footer">
+        <span class="tag-line">GRANOLA</span>
+        <a class="evlink" href="https://luma.com/granola-marketing?tk=ajFRAs" target="_blank" rel="noopener">View Event &rarr;</a>
+      </div>
+    </div>
+
+    <div class="card reveal" data-day="22">
+      <div class="badge-row"><span class="badge badge-pink">SAT, AUG 22</span></div>
+      <h3>Girl's Run + Brunch in SF</h3>
+      <div class="meta"><b>Sat, Aug 22 &middot; 10:00 AM</b> &middot; Marina Green / Equator Coffees, San Francisco, CA</div>
+      <p class="desc">Circe, Pilot, and Novara bring together women founders, operators, and investors for a Saturday morning run in the Marina followed by brunch on Marina Green &mdash; female-founded coffee, yogurt, and granola included. Approval required to register.</p>
+      <div class="card-footer">
+        <span class="tag-line">CIRCE &middot; PILOT &middot; NOVARA</span>
+        <a class="evlink" href="https://luma.com/cqtxnoi0" target="_blank" rel="noopener">View Event &rarr;</a>
+      </div>
+    </div>
+
+    <div class="card reveal" data-day="27">
       <div class="badge-row"><span class="badge badge-pink">THU, AUG 27</span></div>
       <h3>Founders Showcase</h3>
       <div class="meta"><b>Thu, Aug 27 &middot; 5:00&ndash;8:00 PM</b> &middot; San Francisco (address on registration)</div>
@@ -403,66 +798,31 @@
     <div class="section-marker"><span class="dot"></span>DIGITAL WORKSHOPS &mdash; ON THE RADAR</div>
     <hr class="section-hr">
 
-    <div class="card hero-card">
+    <div class="card hero-card reveal" data-day="18">
       <div class="badge-row">
-        <span class="badge badge-gold">TUE, AUG 11</span>
-        <span class="badge badge-pink">MUST ATTEND</span>
-      </div>
-      <h3>Claude Coworkshop &mdash; San Francisco</h3>
-      <div class="meta"><b>Tue, Aug 11 &middot; 1:00&ndash;5:00 PM</b> &middot; workshop, then 4&ndash;5 PM networking happy hour &middot; San Francisco</div>
-      <p class="desc">Direct access to Claude and the Anthropic team. A live "Day in the Life" demo of Cowork, Claude for Excel and PowerPoint, and connectors across Google Workspace, Salesforce, Slack, and Jira &mdash; then a 45-minute hands-on build session tailored to your role. Built for Director/VP-level leaders in Finance, Ops, Marketing, HR, Legal, and Sales. Free, approval required, director-level and above.</p>
-      <p class="note">Note: this session is held in San Francisco. It's part of a full week of Claude Coworkshops running the week of August 10th &mdash; this Aug 11 date is the flagship SF session.</p>
-      <div class="card-footer">
-        <span class="tag-line">ANTHROPIC &middot; PROVECTUS</span>
-        <a class="evlink" href="https://luma.com/claude-coworkshop-sf-aug-11" target="_blank" rel="noopener">View Event &rarr;</a>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="badge-row">
-        <span class="badge badge-grey">TUE, AUG 18</span>
+        <span class="badge badge-gold">TUE, AUG 18</span>
         <span class="badge badge-purple">VIRTUAL</span>
       </div>
       <h3>Claude Cowork for Marketing &mdash; AI Edge Virtual Training</h3>
       <div class="meta"><b>Tue, Aug 18</b> &middot; Zoom (link sent on registration) &middot; Hosted by Blavity, Inc.</div>
-      <p class="desc">A virtual training session on using Claude Cowork for marketing workflows &mdash; part of Blavity's AI Edge series. Good pick if you can't make the in-person SF workshop but want the hands-on Cowork walkthrough.</p>
+      <p class="desc">A virtual training session on using Claude Cowork for marketing workflows &mdash; part of Blavity's AI Edge series. Good pick if you can't make an in-person workshop but want the hands-on Cowork walkthrough.</p>
       <div class="card-footer">
         <span class="tag-line">BLAVITY, INC.</span>
         <a class="evlink" href="https://posh.vip/e/claude-cowork?t=email-1" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
 
-    <div class="card">
+    <div class="card reveal" data-day="18">
       <div class="badge-row">
-        <span class="badge badge-pink">THU, AUG 13</span>
-        <span class="badge badge-full">EVENT FULL &middot; WAITLIST</span>
+        <span class="badge badge-pink">TUE, AUG 18</span>
+        <span class="badge badge-purple">VIRTUAL</span>
       </div>
-      <h3>Codex Community Meetup: Codex for Marketers</h3>
-      <div class="meta"><b>Thu, Aug 13 &middot; 5:30&ndash;7:30 PM</b> &middot; San Francisco, CA</div>
-      <p class="desc">OpenAI's Codex team and marketers from Profound, Ramp, and Upside demo how they're using Codex for real work &mdash; including a walkthrough from Codex product marketer Pranav Deshpande, live operator demos, and Q&amp;A. Every attendee gets $100 in Codex credits. In-person only in SF; already full, but the waitlist is open.</p>
+      <h3>Lunch and Learn: Harnessing Claude for CRE Investment &amp; Asset Management (Part 2)</h3>
+      <div class="meta"><b>Tue, Aug 18 &middot; 9:30&ndash;10:30 AM PT</b> &middot; Zoom (link sent on registration)</div>
+      <p class="desc">Session 2, "Close the Deal: Financing, Diligence &amp; the Decision," is a fully hands-on hour &mdash; no demo-watching. Use Claude live to compare competing lender term sheets, turn a messy diligence packet into a ranked issues-and-retrade log, draft a full Investment Committee memo, and run a live market check. You don't need to have attended Session 1.</p>
       <div class="card-footer">
-        <span class="tag-line">CODEX COMMUNITY EVENTS</span>
-        <a class="evlink" href="https://luma.com/fw8aheuk?tk=QrUVHp" target="_blank" rel="noopener">View Event &rarr;</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ALSO WORTH A SCAN -->
-  <section>
-    <div class="section-marker"><span class="dot"></span>ALSO WORTH A SCAN</div>
-    <hr class="section-hr">
-
-    <div class="card">
-      <div class="badge-row">
-        <span class="badge badge-pink">FRI, AUG 7</span>
-        <span class="badge badge-full">EVENT FULL &middot; WAITLIST</span>
-      </div>
-      <h3>AI x Fashion Coffee Club</h3>
-      <div class="meta"><b>Fri, Aug 7 &middot; 8:00&ndash;9:30 AM</b> &middot; Le Marais Bakery (Sanchez St.), San Francisco</div>
-      <p class="desc">An intimate, small-group coffee gathering for people fascinated by the intersection of AI and fashion. Already at capacity for this edition &mdash; join the waitlist or watch for the next one.</p>
-      <div class="card-footer">
-        <span class="tag-line">COMMUNITY-HOSTED</span>
-        <a class="evlink" href="https://luma.com/xfbtidsx" target="_blank" rel="noopener">View Event &rarr;</a>
+        <span class="tag-line">REFM</span>
+        <a class="evlink" href="https://us06web.zoom.us/webinar/register/WN_-dRfP25dTcqwhKrxud9hsw#/registration" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
   </section>
@@ -472,7 +832,7 @@
     <div class="section-marker"><span class="dot"></span>PROPTECH &mdash; WORTH THE TRIP</div>
     <hr class="section-hr">
 
-    <div class="card">
+    <div class="card reveal">
       <div class="badge-row"><span class="badge badge-pink">SEP 2&ndash;4</span></div>
       <h3>Elise Beyond</h3>
       <div class="meta"><b>Wed&ndash;Fri, Sep 2&ndash;4, 2026</b> &middot; JW Marriott, Nashville, TN</div>
@@ -483,7 +843,7 @@
       </div>
     </div>
 
-    <div class="card">
+    <div class="card reveal">
       <div class="badge-row"><span class="badge badge-pink">SEP 22&ndash;24</span></div>
       <h3>Blueprint</h3>
       <div class="meta"><b>Tue&ndash;Thu, Sep 22&ndash;24, 2026</b> &middot; The Venetian, Las Vegas, NV</div>
@@ -493,9 +853,138 @@
         <a class="evlink" href="https://blueprintvegas.com" target="_blank" rel="noopener">View Event &rarr;</a>
       </div>
     </div>
+
+    <div class="card reveal">
+      <div class="badge-row"><span class="badge badge-pink">OCT 20&ndash;21</span></div>
+      <h3>CREtech New York</h3>
+      <div class="meta"><b>Tue&ndash;Wed, Oct 20&ndash;21, 2026</b> &middot; Javits Center, New York, NY</div>
+      <p class="desc">The world's premier real estate AI conference &mdash; 3,000 leaders (72% VP+), 150 speakers, and 20,000+ curated 1:1 meetings across two days of AI-focused programming for owners, developers, investors, occupiers, and proptech founders. Ticket prices increase Aug 14.</p>
+      <div class="card-footer">
+        <span class="tag-line">CRETECH</span>
+        <a class="evlink" href="https://cretech.com" target="_blank" rel="noopener">View Event &rarr;</a>
+      </div>
+    </div>
   </section>
 
-  <div class="cta-box">
+  </div>
+
+  <div class="tab-panel" id="tab-archive">
+    <section>
+      <div class="section-marker"><span class="dot"></span>PAST EVENTS</div>
+      <hr class="section-hr">
+      <p class="archive-note">Events already held this month &mdash; kept here for reference.</p>
+
+      <div class="card archived">
+        <div class="badge-row"><span class="badge badge-past">MON, AUG 3</span></div>
+        <h3>Agents That Pay</h3>
+        <div class="meta"><b>Mon, Aug 3 &middot; 5:45&ndash;8:30 PM</b> &middot; AWS Builder Loft, San Francisco &middot; Hosted by Nevermined</div>
+        <p class="desc">A hands-on workshop, not a panel &mdash; bring any agent you're building and leave with it able to pay autonomously. Talks from Nevermined, Exa, Baselayer, and Braintrust, then a live build session wiring up the Nevermined payments layer. Approval required to register.</p>
+        <div class="card-footer">
+          <span class="tag-line">NEVERMINED &middot; AWS BUILDER LOFT</span>
+          <a class="evlink" href="https://luma.com/f6m4yhtr" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row"><span class="badge badge-past">TUE, AUG 4</span></div>
+        <h3>Built on Baseten | AI Demo Night</h3>
+        <div class="meta"><b>Tue, Aug 4 &middot; 6:00&ndash;8:00 PM</b> &middot; Baseten HQ, San Francisco</div>
+        <p class="desc">Quarterly showcase where early-stage founders building on Baseten's inference stack get on stage and share technical stories. This edition: Trajectory, Subconscious, Antigen, and Kaizen. Hosted with CapitalG. Space is limited.</p>
+        <div class="card-footer">
+          <span class="tag-line">BASETEN &middot; CAPITALG</span>
+          <a class="evlink" href="https://luma.com/b4y2veki" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row"><span class="badge badge-past">WED, AUG 5</span></div>
+        <h3>Privy Home: IRL SF</h3>
+        <div class="meta"><b>Wed, Aug 5 &middot; 11:00 AM&ndash;6:00 PM</b> &middot; San Francisco (address on registration)</div>
+        <p class="desc">Privy's quarterly community series lands in SF for an afternoon of technical talks, a hands-on AWS AgentCore workshop, a Stripe Projects builder session, live customer demos, and office hours &mdash; for anyone building AI agents, embedded finance, or onchain infrastructure.</p>
+        <div class="card-footer">
+          <span class="tag-line">PRIVY &middot; STRIPE &middot; AWS AGENTCORE</span>
+          <a class="evlink" href="https://luma.com/x1to4ziz?tk=PY94Eq" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row"><span class="badge badge-past">FRI, AUG 7</span></div>
+        <h3>Snowflake X Beta Fund Agent &amp; Token Economy Hackathon</h3>
+        <div class="meta"><b>Fri, Aug 7 &middot; 9:00 AM&ndash;6:00 PM</b> &middot; Menlo Park, CA</div>
+        <p class="desc">A full-day build sprint on the economics behind agent intelligence &mdash; cost-of-intelligence tooling, monetizable AI products, or open-category token-economy hacks. Snowflake Cortex Agents credits provided. $600/$500/$400 prizes, judged live at 4 PM.</p>
+        <div class="card-footer">
+          <span class="tag-line">SNOWFLAKE &middot; BETA UNIVERSITY</span>
+          <a class="evlink" href="https://luma.com/beta-fdnw" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row">
+          <span class="badge badge-past">TUE, AUG 11</span>
+          <span class="badge badge-full">MUST ATTEND</span>
+        </div>
+        <h3>Claude Coworkshop &mdash; San Francisco</h3>
+        <div class="meta"><b>Tue, Aug 11 &middot; 1:00&ndash;5:00 PM</b> &middot; workshop, then 4&ndash;5 PM networking happy hour &middot; San Francisco</div>
+        <p class="desc">Direct access to Claude and the Anthropic team. A live "Day in the Life" demo of Cowork, Claude for Excel and PowerPoint, and connectors across Google Workspace, Salesforce, Slack, and Jira &mdash; then a 45-minute hands-on build session tailored to your role. Built for Director/VP-level leaders in Finance, Ops, Marketing, HR, Legal, and Sales.</p>
+        <div class="card-footer">
+          <span class="tag-line">ANTHROPIC &middot; PROVECTUS</span>
+          <a class="evlink" href="https://luma.com/claude-coworkshop-sf-aug-11" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row"><span class="badge badge-past">WED, AUG 12</span></div>
+        <h3>Mastering Negotiation and High-Stakes Collaboration</h3>
+        <div class="meta"><b>Wed, Aug 12</b> &middot; San Francisco (address on registration)</div>
+        <p class="desc">A 100 Women in Finance Education-series session on negotiation tactics and navigating high-stakes collaboration &mdash; open to members and prospective members of the Northern California chapter.</p>
+        <div class="card-footer">
+          <span class="tag-line">100 WOMEN IN FINANCE</span>
+          <a class="evlink" href="https://100women.org/event/?event_id=4427#4427-mastering-negotiation-and-high-stakes-collaboration" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row"><span class="badge badge-past">THU, AUG 13</span></div>
+        <h3>AI Healthtech Summit at AngelList</h3>
+        <div class="meta"><b>Thu, Aug 13 &middot; 6:00&ndash;9:00 PM</b> &middot; AngelList, San Francisco, CA</div>
+        <p class="desc">SFPlayground's evening summit on AI moving from healthcare demos into real clinical workflows &mdash; a panel with a physician-investor, a former FDA Digital Health Center of Excellence regulator, and a healthcare founder, plus startup demo tables, dinner, and networking.</p>
+        <div class="card-footer">
+          <span class="tag-line">SFPLAYGROUND &middot; ANGELLIST</span>
+          <a class="evlink" href="https://luma.com/aihealthtechsf?coupon=SYNEXIS20" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row">
+          <span class="badge badge-past">THU, AUG 13</span>
+          <span class="badge badge-full">EVENT FULL &middot; WAITLIST</span>
+        </div>
+        <h3>Codex Community Meetup: Codex for Marketers</h3>
+        <div class="meta"><b>Thu, Aug 13 &middot; 5:30&ndash;7:30 PM</b> &middot; San Francisco, CA</div>
+        <p class="desc">OpenAI's Codex team and marketers from Profound, Ramp, and Upside demo how they're using Codex for real work &mdash; including a walkthrough from Codex product marketer Pranav Deshpande, live operator demos, and Q&amp;A. Every attendee got $100 in Codex credits.</p>
+        <div class="card-footer">
+          <span class="tag-line">CODEX COMMUNITY EVENTS</span>
+          <a class="evlink" href="https://luma.com/fw8aheuk?tk=QrUVHp" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+
+      <div class="card archived">
+        <div class="badge-row">
+          <span class="badge badge-past">FRI, AUG 7</span>
+          <span class="badge badge-full">EVENT FULL &middot; WAITLIST</span>
+        </div>
+        <h3>AI x Fashion Coffee Club</h3>
+        <div class="meta"><b>Fri, Aug 7 &middot; 8:00&ndash;9:30 AM</b> &middot; Le Marais Bakery (Sanchez St.), San Francisco</div>
+        <p class="desc">An intimate, small-group coffee gathering for people fascinated by the intersection of AI and fashion. Already at capacity for this edition &mdash; join the waitlist or watch for the next one.</p>
+        <div class="card-footer">
+          <span class="tag-line">COMMUNITY-HOSTED</span>
+          <a class="evlink" href="https://luma.com/xfbtidsx" target="_blank" rel="noopener">View Event &rarr;</a>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="cta-box reveal">
     <h3>Get this calendar in your inbox</h3>
     <p>Drop your email and get the next edition delivered before it's posted.</p>
     <form id="email-capture-form" class="email-form" action="https://formspree.io/f/mgoggqqy" method="POST">
@@ -514,6 +1003,136 @@
 </div>
 
 <script>
+  // Scroll-triggered hero transformation: as the hero scrolls out of view,
+  // it shrinks/fades into a compact state and a fixed mini-header slides in.
+  // Reverses smoothly when scrolling back up. Uses IntersectionObserver
+  // (no per-frame scroll math) and respects prefers-reduced-motion.
+  (function () {
+    var hero = document.getElementById('hero');
+    var sentinel = document.getElementById('hero-sentinel');
+    var miniHeader = document.getElementById('mini-header');
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced || !hero || !sentinel || !miniHeader || !('IntersectionObserver' in window)) return;
+
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          hero.classList.remove('is-collapsed');
+          miniHeader.classList.remove('visible');
+        } else if (entry.boundingClientRect.top < 0) {
+          hero.classList.add('is-collapsed');
+          miniHeader.classList.add('visible');
+        }
+      });
+    }, { threshold: 0 });
+
+    observer.observe(sentinel);
+  })();
+
+  // Reveal-on-scroll: cards, the "how this helps" box, and the CTA box fade
+  // and slide up into place as they enter the viewport. Reveals once per
+  // element (doesn't re-hide on scroll back up) and respects reduced motion.
+  (function () {
+    var prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var targets = document.querySelectorAll('.reveal');
+    if (prefersReduced || !targets.length || !('IntersectionObserver' in window)) {
+      targets.forEach(function (el) { el.classList.add('in-view'); });
+      return;
+    }
+
+    var revealObserver = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+    targets.forEach(function (el) { revealObserver.observe(el); });
+  })();
+
+  // Adaptive date-filter slider: ported from a React/motion component into
+  // vanilla JS. Drag it to hide any Coming Soon / Digital Workshops card
+  // dated earlier than the selected day of August; the fill color and the
+  // big number shift through three tiers (gold -> pink -> purple/blue) as
+  // you move through the range, echoing the original's "adaptive" color
+  // behavior. Proptech and Archive cards are untouched by this filter.
+  (function () {
+    var slider = document.getElementById('filter-slider');
+    var fill = document.getElementById('filter-fill');
+    var thumb = document.getElementById('filter-thumb');
+    var dayNum = document.getElementById('filter-day-number');
+    var hint = document.getElementById('filter-hint');
+    if (!slider || !fill || !thumb || !dayNum || !hint) return;
+
+    var cards = Array.prototype.slice.call(document.querySelectorAll('.card[data-day]'));
+    var days = cards.map(function (c) { return parseInt(c.getAttribute('data-day'), 10); });
+    var minDay = days.length ? Math.min.apply(null, days) : 1;
+    var maxDay = days.length ? Math.max.apply(null, days) : 31;
+
+    slider.min = minDay;
+    slider.max = maxDay;
+    slider.value = minDay;
+
+    function tierColors(pct) {
+      if (pct < 0.34) {
+        return { text: '#e8c468', fill: 'linear-gradient(90deg, #e8c468, #f4a24a)' };
+      } else if (pct < 0.67) {
+        return { text: '#f472b6', fill: 'linear-gradient(90deg, rgba(236,111,176,0.45), #f472b6)' };
+      } else {
+        return { text: '#a78bfa', fill: 'linear-gradient(90deg, #a78bfa, #7ec8ff)' };
+      }
+    }
+
+    function render() {
+      var value = parseInt(slider.value, 10);
+      var pct = maxDay === minDay ? 100 : ((value - minDay) / (maxDay - minDay)) * 100;
+      var colors = tierColors(pct / 100);
+
+      dayNum.textContent = value;
+      dayNum.style.color = colors.text;
+      dayNum.classList.add('bump');
+      setTimeout(function () { dayNum.classList.remove('bump'); }, 150);
+
+      fill.style.width = 'calc((' + pct + ' / 100) * (100% - 44px) + 44px)';
+      fill.style.background = colors.fill;
+      thumb.style.left = 'calc((' + pct + ' / 100) * (100% - 44px))';
+
+      hint.textContent = value <= minDay
+        ? 'Showing all upcoming events'
+        : 'Showing events from Aug ' + value + ' onward';
+
+      cards.forEach(function (card) {
+        var d = parseInt(card.getAttribute('data-day'), 10);
+        card.classList.toggle('day-hidden', d < value);
+      });
+    }
+
+    slider.addEventListener('input', render);
+    render();
+  })();
+
+  // Tab switching between "Upcoming" and "Archive" panels &mdash; no page
+  // reload, just toggles which panel is visible and marks the active button.
+  (function () {
+    var tabBtns = document.querySelectorAll('.tab-btn');
+    var panels = document.querySelectorAll('.tab-panel');
+    tabBtns.forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var targetId = btn.getAttribute('data-tab');
+        tabBtns.forEach(function (b) {
+          b.classList.remove('active');
+          b.setAttribute('aria-selected', 'false');
+        });
+        panels.forEach(function (p) { p.classList.remove('active'); });
+        btn.classList.add('active');
+        btn.setAttribute('aria-selected', 'true');
+        document.getElementById(targetId).classList.add('active');
+      });
+    });
+  })();
+
   // Submits the signup form to Formspree via fetch, so we can show an inline
   // confirmation message instead of redirecting to Formspree's default page.
   document.getElementById('email-capture-form').addEventListener('submit', function (e) {
